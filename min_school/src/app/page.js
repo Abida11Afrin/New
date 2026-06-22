@@ -11,6 +11,11 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
 
 
+export default function BatchesSection() {
+  const { lang } = useLanguage();
+  const [data, setData] = useState(null);
+
+  
 {/*for app download section*/}
 const toBengaliDigits = (num) => {
   const bengaliDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -48,12 +53,65 @@ useEffect(() => {
 
 const [onlineEnglishCourses, setOnlineEnglishCourses] = useState([]);
 
+const [offlineLocations, setOfflineLocations] = useState([]);
+const [offlineEnglishCourses, setOfflineEnglishCourses] = useState([]);
+const [superFeatures, setSuperFeatures] = useState([]);
+const [offlineImages, setOfflineImages] = useState([]);
+const [offlineFeatures, setOfflineFeatures] = useState([]);
+
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=offline_english`)
+    .then((res) => res.json())
+    .then((data) => setOfflineEnglishCourses(data))
+    .catch((err) => console.error("Offline English courses fetch failed:", err));
+}, []);
+
 useEffect(() => {
   fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=online_english`)
     .then((res) => res.json())
     .then((data) => setOnlineEnglishCourses(data))
     .catch((err) => console.error("Online English courses fetch failed:", err));
 }, []);
+
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-locations/`)
+    .then((res) => res.json())
+    .then((data) => setOfflineLocations(data))
+    .catch((err) => console.error("Offline locations fetch failed:", err));
+}, []);
+
+
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/super-features/`)
+    .then((res) => res.json())
+    .then((data) => setSuperFeatures(data))
+    .catch((err) => console.error(err));
+}, []);
+
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-images/`)
+    .then((res) => res.json())
+    .then((data) => setOfflineImages(data))
+    .catch((err) => console.error(err));
+}, []);
+
+useEffect(() => {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-features/`)
+    .then((res) => res.json())
+    .then((data) => setOfflineFeatures(data))
+    .catch((err) => console.error(err));
+}, []);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/batches/")
+      .then(res => res.json())
+      .then(data => setData(data));
+  }, []);
+
+  if (!data) return <p>Loading...</p>;
+
+  const { section, categories } = data;
+
 
 useEffect(() => {
   const startCount = () => {
@@ -97,8 +155,11 @@ useEffect(() => {
     }
   };
 
+
   window.addEventListener("scroll", handleScroll);
   handleScroll();
+
+  
 
   return () => {
     window.removeEventListener("scroll", handleScroll);
@@ -235,180 +296,146 @@ useEffect(() => {
 </section>
 
 
-      {/* ── English Section ── */}
-
-       <section>
-
-      <div className="mb-16 md:mb-24 bg-[#0d0d0d] min-h-screen flex justify-center" px-8 py-12style={{ animationDelay: "1.0s"}}>
-
-
-
-<div
-
-  className="cursor-pointer w-200 rounded-3xl p-2"
-
-  style={{
-
-    background: "linear-gradient(135deg, #0f0f0f, #0d0d0d)",
-
-    border: "1px solid rgba(34, 211, 238, 0.2)",
-
-    boxShadow: `
-
-      inset 0 0 40px rgba(34, 211, 238, 0.08),
-
-      inset 0 0 80px rgba(34, 211, 238, 0.04),
-
-      inset 0 -20px 60px rgba(34, 211, 238, 0.06)
-
-    `,
-
-    animationDelay: "1.0s"
-
-  }}
-
->      <div className="max-w-5xl mx-auto">
-
-
-
-          <h2 className="eng-title text-center text-3xl font-bold text-[#f8b17f] mb-8">
-
-            ক্লাসরুমে ইংরেজি শেখার নতুন আনন্দ
-
-          </h2>
-
-
-
-          {/* Location Tabs */}
-
-          <div className="eng-loc flex gap-3 flex-wrap mb-8">
-
-            {[
-
-              { name: "উত্তরা", addr: "লিফট: ৮, হাউজ: ২, রোড: ৭, সেক্টর: ৩, উত্তরা, ঢাকা (রাজলক্ষ্মী কমপ্লেক্সের সামনে)" },
-
-              { name: "পান্থপথ", addr: "লিফট: ২, হাউজ: ১৪৭/এ/২, গ্রীন রোড, পান্থপথ, ঢাকা (পান্থপথ সিগনালের উত্তরে)" },
-
-              { name: "মিরপুর", addr: "লিফট: ৭, প্লট: ১১৪, সেনপাড়া পর্বতা, মিরপুর-১০, ঢাকা (মেট্রোরেল পিলার: ২৫৬)" },
-
-              { name: "মগবাজার", addr: "লিফট: ৩, প্লট: ২০৬, আউটার সার্কুলার রোড, মগবাজার, ঢাকা (ওয়্যারলেস সার্কেল)" },
-
-              { name: "চট্টগ্রাম", addr: "লিফট: ৪, প্লট: ১৫৩, কাপাসগোলা রোড, চকবাজার, চট্টগ্রাম (আলি খাঁ মসজিদের পূর্বে)" },
-
-            ].map((loc, i) => (
-
-              <div key={i} className="bg-[#1a1a1a] border border-[#333] rounded-xl p-3 flex-1 min-w-[160px]">
-
-                <div className="text-white text-sm font-bold mb-1">{loc.name}</div>
-
-                <div className="text-gray-500 text-xs leading-relaxed">{loc.addr}</div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-
-
-      {/* English Course Cards */}
-
-<div className="flex gap-4 flex-wrap justify-center mb-8">
-
-  {[
-
-    { src: "/images/KidsEng.jpg", name: "Kids' English", sub: "For KG - Class 5", orange: true },
-
-    { src: "/images/KidsSpokenEng.jpg", name: "Spoken English...", sub: "For Class 6-10", orange: true },
-
-    { src: "/images/afterSSCEng.jpeg", name: "After SSC Englis...", sub: "For SSC & Above", orange: true },
-
-    { src: "/images/IELTSProgramme.jpg", name: "IELTS Programme", sub: "For HSC & Above", orange: false },
-
-    { src: "/images/StudyAbroad.jpg", name: "Study Abroad", sub: "For HSC & Above", orange: false },
-
-    { src: "/images/SpokenEng.jpg", name: "Spoken English...", sub: "Crash Course", orange: false },
-
-  ].map((course, i) => (
-
-    
-
-    <div
-
-      key={i}
-
-      className="eng-card w-40 cursor-pointer text-center bg-[#111] border border-[#333] rounded-3xl p-3"
-
-      style={{ animationDelay: `${0.5 + i * 0.1}s` }}
-
-    >
-
-      
-
-      {/* IMAGE WRAPPER (Hero style look) */}
-
-      <div
-
-      >
-
-        <Image
-
-          src={course.src}
-
-          alt={course.name}
-
-          width={160}
-
-          height={160}
-
-          className="rounded-xl w-40 h-40 object-cover"
-
-        />
-
-      </div>
-
-
-
-      <div className="text-white text-sm font-bold mt-3">
-
-        {course.name}
-
-      </div>
-
-
-
-      <div className="text-gray-500 text-xs mt-1">
-
-        {course.sub}
-
-      </div>
-
-    </div>
-
-  ))}
-
-</div>
-
-    {/* Button */}
-
-          <div className="eng-btn text-center">
-
-            <button className="bg-green-700 text-white border-none rounded-full px-7 py-3 text-sm font-semibold cursor-pointer">
-
-           অফলাইন সেন্টারে ফ্রি ক্লাস করুন →
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    </section>
-
+{/* ── English Section ── */}
+<section>
+  <div className="mb-16 md:mb-24 bg-[#0d0d0d] min-h-screen flex justify-center px-4 md:px-8 py-12">
+    <div
+      className="w-full max-w-5xl rounded-3xl p-2"
+      style={{
+        background: "linear-gradient(135deg, #0f0f0f, #0d0d0d)",
+        border: "1px solid rgba(66, 78, 80, 0.2)",
+        boxShadow: `
+          inset 0 0 40px rgba(120, 120, 120, 0.2),
+          inset 0 0 80px rgba(120, 120, 120, 0.2),
+          inset 0 -20px 60px rgba(120, 120, 120, 0.2)
+        `,
+      }}
+    >
+      <div className="max-w-5xl mx-auto px-3 py-6 md:px-6 md:py-8">
+
+        {/* Title */}
+        <h2 className="eng-title text-center text-2xl md:text-3xl font-bold text-[#f8b17f] mb-6 md:mb-8">
+          {lang === "BN"
+            ? "ক্লাসরুমে ইংরেজি শেখার নতুন আনন্দ"
+            : "A New Joy of Learning English in the Classroom"}
+        </h2>
+
+        {/* Location Tabs */}
+        <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 mb-6 md:mb-8" style={{ scrollbarWidth: "none" }}>
+          {offlineLocations.length === 0 ? (
+            [...Array(5)].map((_, i) => (
+              <div key={i} className="flex-shrink-0 bg-[#1a1a1a] border border-[#333] rounded-xl p-3 w-[180px]">
+                <div className="h-4 w-16 bg-[#333] rounded animate-pulse mb-2" />
+                <div className="h-3 w-full bg-[#333] rounded animate-pulse" />
+              </div>
+            ))
+          ) : (
+            offlineLocations.map((loc) => (
+              <div
+                key={loc.id}
+                className="flex-shrink-0 bg-[#1a1a1a] border border-[#333] rounded-xl p-3 w-[200px] md:w-auto md:flex-1 md:min-w-[160px]"
+              >
+                <div className="text-white text-sm font-bold mb-1">
+                  {lang === "BN" ? loc.name_bn : loc.name_en}
+                </div>
+                <div className="text-gray-500 text-xs leading-relaxed">
+                  {lang === "BN" ? loc.address_bn : loc.address_en}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Offline English Course Cards */}
+        <div className="grid grid-cols-3 gap-2 md:gap-4 mb-8">
+          {offlineEnglishCourses.length === 0 ? (
+            [...Array(6)].map((_, i) => (
+              <div key={i} className="bg-[#111] border border-[#333] rounded-2xl p-2 md:p-3">
+                <div className="w-full aspect-square bg-[#222] rounded-lg md:rounded-xl animate-pulse mb-2" />
+                <div className="h-3 w-3/4 bg-[#222] rounded animate-pulse mb-1" />
+                <div className="h-3 w-1/2 bg-[#222] rounded animate-pulse" />
+              </div>
+            ))
+          ) : (
+            offlineEnglishCourses.map((course, i) => {
+              const isOrange = i < 3; // প্রথম ৩টায় orange style
+
+              return isOrange ? (
+                // ── Orange border + shine (প্রথম ৩টা) ──
+                <div key={course.id} className="flex flex-col items-center gap-2">
+                  <div
+                    className="shineWrap box-border w-full rounded-[20px] p-[3px] cursor-pointer hover:scale-105 transition-transform duration-150"
+                    style={{
+                      background: "linear-gradient(145deg, #f5c518, #e8890c, #f5c518)",
+                    }}
+                  >
+                    <span className="shineLine" style={{ animationDelay: `${i * 0.6}s` }} />
+
+                    <div className="box-border w-full rounded-[17px] bg-[#0b0b0b] p-[8px] relative z-[3]">
+                      <div className="w-full rounded-[12px] overflow-hidden">
+                        {course.image_url ? (
+                          <img
+                            src={course.image_url}
+                            alt={lang === "BN" ? course.title_bn : course.title_en}
+                            className="block w-full aspect-square object-cover"
+                          />
+                        ) : (
+                          <div className="w-full aspect-square bg-[#222] rounded-[12px]" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-white text-[11px] md:text-sm font-bold text-center leading-tight line-clamp-2">
+                    {lang === "BN" ? course.title_bn : course.title_en}
+                  </div>
+                  <div className="text-gray-500 text-[10px] md:text-xs text-center line-clamp-1">
+                    {course.instructor || ""}
+                  </div>
+                </div>
+
+              ) : (
+                // ── Normal style (বাকি ৩টা) ──
+                <div
+                  key={course.id}
+                  className="eng-card cursor-pointer text-center bg-[#111] border border-[#333] rounded-2xl md:rounded-3xl p-2 md:p-3 hover:scale-105 transition-transform duration-150"
+                  style={{ animationDelay: `${0.5 + i * 0.1}s` }}
+                >
+                  {course.image_url ? (
+                    <img
+                      src={course.image_url}
+                      alt={lang === "BN" ? course.title_bn : course.title_en}
+                      className="rounded-lg md:rounded-xl w-full aspect-square object-cover"
+                    />
+                  ) : (
+                    <div className="w-full aspect-square bg-[#222] rounded-lg md:rounded-xl" />
+                  )}
+
+                  <div className="text-white text-[11px] md:text-sm font-bold mt-2 leading-tight line-clamp-2">
+                    {lang === "BN" ? course.title_bn : course.title_en}
+                  </div>
+                  <div className="text-gray-500 text-[10px] md:text-xs mt-1 line-clamp-1">
+                    {course.instructor || ""}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Button */}
+        <div className="eng-btn text-center">
+          <button className="bg-green-700 text-white border-none rounded-full px-5 md:px-7 py-2.5 md:py-3 text-xs md:text-sm font-semibold cursor-pointer">
+            {lang === "BN"
+              ? "অফলাইন সেন্টারে ফ্রি ক্লাস করুন →"
+              : "Book a Free Class at Offline Center →"}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 
     {/* ── ঘরে বসে অনলাইনেও ইংরেজি শেখা চলুক নিরবচ্ছিন্ন ── */}
 <section className="mb-12 md:mb-20 lg:mb-28">
@@ -522,7 +549,6 @@ useEffect(() => {
 </section>
 
 {/* ── Super Live Section ── */}
-{/* ── অনলাইনেই শেখা হোক নিজের গতিতে ── */}
 <section className="mb-12 md:mb-20">
   <div className="flex justify-center px-4">
     <div
@@ -554,81 +580,41 @@ useEffect(() => {
           : "Classes by the country's best teachers, recorded lectures, and uninterrupted practice — all online."}
       </p>
 
-      {/* Feature Cards — 3 columns */}
+      {/* Super Feature Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-
-        {/* SuperLive Class */}
-        <div className="flex flex-col gap-4">
-          <div className="rounded-2xl overflow-hidden" style={{ border: "2px solid #1e3a5f" }}>
-            <Image
-              src="/images/SuperLive.jpg"
-              alt="SuperLive Class"
-              width={400}
-              height={240}
-              className="w-full h-48 object-cover"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">
-              <span style={{ color: "#38bdf8", fontStyle: "italic" }}>Super</span>
-              <span style={{ color: "#38bdf8", fontStyle: "italic", fontWeight: 800 }}>Live Class</span>
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {lang === "BN"
-                ? "বিশ্ববিদ্যালয়ের শিক্ষার্থী ও এলামনাইদের সাথে লাইভ ক্লাসে অংশ নিন এবং জাতীয় র‍্যাংকিংয়ে নিজের অবস্থান দেখুন।"
-                : "Join live classes with university students and alumni, and see your position in the national ranking."}
-            </p>
-          </div>
-        </div>
-
-        {/* SuperPrep */}
-        <div className="flex flex-col gap-4">
-          <div className="rounded-2xl overflow-hidden" style={{ border: "2px solid #1e3a5f" }}>
-            <Image
-              src="/images/SuperPrep.svg"
-              alt="SuperPrep"
-              width={400}
-              height={240}
-              className="w-full h-48 object-cover"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">
-              <span style={{ color: "#a855f7" }}>Super</span>
-              <span className="text-white">Prep</span>
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {lang === "BN"
-                ? "দৈনিক/সাপ্তাহিক কুইজ, MCQ ব্যাংক এবং ফুল মডেল টেস্টের মাধ্যমে শিখুন এবং আপনার দুর্বলতা চিহ্নিত করুন।"
-                : "Learn through daily/weekly quizzes, MCQ banks, and full model tests, and identify your weak areas."}
-            </p>
-          </div>
-        </div>
-
-        {/* SuperSolve */}
-        <div className="flex flex-col gap-4">
-          <div className="rounded-2xl overflow-hidden" style={{ border: "2px solid #1e3a5f" }}>
-            <Image
-              src="/images/SuperSolve.svg"
-              alt="SuperSolve"
-              width={400}
-              height={240}
-              className="w-full h-48 object-cover"
-            />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">
-              <span style={{ color: "#f97316" }}>Super</span>
-              <span className="text-white">Solve</span>
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              {lang === "BN"
-                ? "TenTen হলো আপনার ২৪/৭ লার্নিং পার্টনার। কঠিন প্রশ্ন সমাধান এবং পরীক্ষার প্রস্তুতির জন্য সবসময় আপনার পাশে।"
-                : "TenTen is your 24/7 learning partner — always by your side for solving tough problems and exam preparation."}
-            </p>
-          </div>
-        </div>
-
+        {superFeatures.length === 0 ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="flex flex-col gap-4">
+              <div className="rounded-2xl w-full h-48 bg-[#1a1a2a] animate-pulse" />
+              <div className="h-4 w-1/2 bg-[#1a1a2a] rounded animate-pulse" />
+              <div className="h-3 w-full bg-[#1a1a2a] rounded animate-pulse" />
+            </div>
+          ))
+        ) : (
+          superFeatures.map((feature) => (
+            <div key={feature.id} className="flex flex-col gap-4">
+              <div className="rounded-2xl overflow-hidden" style={{ border: "2px solid #1e3a5f" }}>
+                {feature.image_url ? (
+                  <img
+                    src={feature.image_url}
+                    alt={feature.title}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-[#1a1a2a]" />
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mb-2" style={{ color: feature.title_color }}>
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {lang === "BN" ? feature.description_bn : feature.description_en}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Divider */}
@@ -651,72 +637,53 @@ useEffect(() => {
 
       {/* Offline Images */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {(lang === "BN"
-          ? [
-              { src: "/images/British_10min.jpg", caption: "ব্রিটিশ কাউন্সিল সার্টিফাইড টিচার" },
-              { src: "/images/1-1Counsil.jpg", caption: "" },
-              { src: "/images/classroom.jpg", caption: "" },
-            ]
-          : [
-              { src: "/images/British_10min.jpg", caption: "British Council Certified Teachers" },
-              { src: "/images/1-1Counsil.jpg", caption: "" },
-              { src: "/images/classroom.jpg", caption: "" },
-            ]
-        ).map((img, i) => (
-          <div key={i} className="relative rounded-2xl overflow-hidden" style={{ border: "2px solid #3a1a1a" }}>
-            <Image
-              src={img.src}
-              alt={img.caption || "Offline Class"}
-              width={400}
-              height={260}
-              className="w-full h-52 object-cover"
-            />
-            {img.caption && (
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-sm text-center py-2 px-3">
-                {img.caption}
-              </div>
-            )}
-          </div>
-        ))}
+        {offlineImages.length === 0 ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i} className="rounded-2xl w-full h-52 bg-[#1a1a1a] animate-pulse" />
+          ))
+        ) : (
+          offlineImages.map((img) => (
+            <div key={img.id} className="relative rounded-2xl overflow-hidden" style={{ border: "2px solid #3a1a1a" }}>
+              {img.image_url ? (
+                <img
+                  src={img.image_url}
+                  alt={lang === "BN" ? img.caption_bn || "Offline Class" : img.caption_en || "Offline Class"}
+                  className="w-full h-52 object-cover"
+                />
+              ) : (
+                <div className="w-full h-52 bg-[#1a1a1a]" />
+              )}
+              {(lang === "BN" ? img.caption_bn : img.caption_en) && (
+                <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-sm text-center py-2 px-3">
+                  {lang === "BN" ? img.caption_bn : img.caption_en}
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
 
-      {/* Feature List */}
+      {/* Offline Feature List */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {(lang === "BN"
-          ? [
-              {
-                title: "দেশসেরা টিচারদের প্যানেল",
-                desc: "অনলাইন এবং অফলাইন উভয় ক্ষেত্রে বিশেষজ্ঞ শিক্ষক প্যানেল, যারা আপনার ইংরেজি ভীতি কাটিয়ে উঠতে মেন্টর হিসেবে কাজ করবেন।",
-              },
-              {
-                title: "1-1 Counselling",
-                desc: "পিতামাতাদের জন্য 1-1 কাউসেলিং সেশন, যেখানে ক্লাস টিচারদের সাথে আপনার সন্তানের অগ্রগতি, শক্তি এবং উন্নতির ক্ষেত্র নিয়ে আলোচনা করতে...",
-              },
-              {
-                title: "কাজ করতে করতে শেখা",
-                desc: "শুধু লেকচার নয়, লার্নিং অ্যাক্টিভিটি এবং গেমের মাধ্যমে শেখার পদ্ধতি, যেখানে শিক্ষার্থীরা শুনে, বুঝে এবং পড়ে ইংরেজি অনুশীলন করতে পারবে।",
-              },
-            ]
-          : [
-              {
-                title: "Panel of the Country's Best Teachers",
-                desc: "An expert teaching panel for both online and offline, who will mentor you to overcome your fear of English.",
-              },
-              {
-                title: "1-1 Counselling",
-                desc: "1-1 counselling sessions for parents, where you can discuss your child's progress, strengths, and areas for improvement with class teachers...",
-              },
-              {
-                title: "Learning by Doing",
-                desc: "Not just lectures — a learning approach through activities and games, where students can practice English by listening, understanding, and reading.",
-              },
-            ]
-        ).map((item, i) => (
-          <div key={i}>
-            <h3 className="text-white text-lg font-bold mb-3">{item.title}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-          </div>
-        ))}
+        {offlineFeatures.length === 0 ? (
+          [...Array(3)].map((_, i) => (
+            <div key={i}>
+              <div className="h-4 w-1/2 bg-[#1a1a1a] rounded animate-pulse mb-3" />
+              <div className="h-3 w-full bg-[#1a1a1a] rounded animate-pulse" />
+            </div>
+          ))
+        ) : (
+          offlineFeatures.map((item) => (
+            <div key={item.id}>
+              <h3 className="text-white text-lg font-bold mb-3">
+                {lang === "BN" ? item.title_bn : item.title_en}
+              </h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                {lang === "BN" ? item.description_bn : item.description_en}
+              </p>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Buttons */}
@@ -736,153 +703,67 @@ useEffect(() => {
 
 {/* ── দেশসেরা সকল অনলাইন ব্যাচ ── */}
 <section className="mb-12 md:mb-20 px-4">
-  <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Title */}
+        <h2 className="text-center text-3xl md:text-4xl font-bold mb-4">
+          <span className="text-white">
+            {lang === "BN" ? section.title_part1_bn : section.title_part1_en}
+          </span>{" "}
+          <span style={{ color: section.title_part2_color }}>
+            {lang === "BN" ? section.title_part2_bn : section.title_part2_en}
+          </span>{" "}
+          <span style={{ color: section.title_part3_color }}>
+            {lang === "BN" ? section.title_part3_bn : section.title_part3_en}
+          </span>
+        </h2>
 
-    {/* Title */}
-    <h2 className="text-center text-3xl md:text-4xl font-bold mb-4">
-      <span className="text-white">{lang === "BN" ? "দেশসেরা সকল " : "All the Country's Best "}</span>
-      <span style={{ color: "#f97316" }}>{lang === "BN" ? "অনলাইন " : "Online "}</span>
-      <span style={{ color: "#facc15" }}>{lang === "BN" ? "ব্যাচ" : "Batches"}</span>
-    </h2>
+        {/* Subtitle */}
+        <p className="text-center text-gray-400 text-sm md:text-base mb-10">
+          {lang === "BN" ? section.subtitle_bn : section.subtitle_en}
+        </p>
 
-    {/* Subtitle */}
-    <p className="text-center text-gray-400 text-sm md:text-base mb-10">
-      {lang === "BN"
-        ? "টেন মিনিট স্কুলের বিভিন্ন কোর্সে এই মুহূর্তে পড়া ৩০+ হাজার Academic স্টুডেন্টের একজন হও তুমিও।"
-        : "Become one of the 30,000+ Academic students currently studying in various courses at 10 Minute School."}
-    </p>
-
-    {/* Main Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-      {/* Left — ক্লাস ৬-৮ */}
-      <div
-        className="rounded-2xl p-6"
-        style={{
-          background: "linear-gradient(135deg, #1a1000, #2a1a00)",
-          border: "1px solid #3a2a00",
-        }}
-      >
-        <h3 className="text-lg font-bold mb-6" style={{ color: "#f97316" }}>
-          {lang === "BN" ? "ক্লাস ৬-৮ অনলাইন ব্যাচ ২০২৬" : "Class 6-8 Online Batch 2026"}
-        </h3>
-        <div className="flex flex-col gap-3">
-          {(lang === "BN"
-            ? ["৬ষ্ঠ শ্রেণি", "৭ম শ্রেণি", "৮ম শ্রেণি"]
-            : ["Class 6", "Class 7", "Class 8"]
-          ).map((item, i) => (
-            <button
-              key={i}
-              className="text-white text-sm font-medium rounded-full px-5 py-2.5 text-left hover:opacity-80 transition-opacity"
-              style={{ background: "#2a2a2a", border: "1px solid #444" }}
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {categories.map(cat => (
+            <div
+              key={cat.id}
+              className={`rounded-2xl p-6 ${cat.grid_cols === 2 ? 'md:col-span-2' : ''}`}
+              style={{
+                background: `linear-gradient(135deg, ${cat.gradient_from}, ${cat.gradient_to})`,
+                border: `1px solid ${cat.border_color}`,
+              }}
             >
-              {item} →
-            </button>
+              <h3 className="text-lg font-bold mb-6" style={{ color: cat.color }}>
+                {lang === "BN" ? cat.name_bn : cat.name_en}
+              </h3>
+
+              {cat.subcategories.map(sub => (
+                <div key={sub.id} className="mb-6 last:mb-0">
+                  {sub.name_en && (
+                    <p className="text-gray-400 text-sm mb-3">
+                      {lang === "BN" ? sub.name_bn : sub.name_en}
+                    </p>
+                  )}
+                  <div className="flex flex-col md:flex-wrap gap-3">
+                    {sub.items.map(item => (
+                      <button
+                        key={item.id}
+                        className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity text-left"
+                        style={{ background: "#2a2a2a", border: "1px solid #444" }}
+                      >
+                        {lang === "BN" ? item.name_bn : item.name_en}
+                        {item.has_gift && " 🎁"} →
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       </div>
-
-      {/* Right — এসএসসি অনলাইন ব্যাচ (spans 2 cols) */}
-      <div
-        className="md:col-span-2 rounded-2xl p-6"
-        style={{
-          background: "linear-gradient(135deg, #2a0a0a, #1a0505)",
-          border: "1px solid #3a1010",
-        }}
-      >
-        <h3 className="text-lg font-bold mb-6" style={{ color: "#ef4444" }}>
-          {lang === "BN" ? "এসএসসি অনলাইন ব্যাচ" : "SSC Online Batch"}
-        </h3>
-
-        {/* নবম শ্রেণি */}
-        <div className="mb-6">
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "নবম শ্রেণি (এসএসসি ২০২৬)" : "Class 9 (SSC 2026)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "বিজ্ঞান বান্ডেল (🎁)",
-                  "ব্যবসায় শিক্ষা ও মানবিক বান্ডেল (🎁)",
-                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
-                ]
-              : [
-                  "Science Bundle (🎁)",
-                  "Business Studies & Humanities Bundle (🎁)",
-                  "Bangla, English, ICT Bundle (🎁)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* দশম শ্রেণি ২০২৭ */}
-        <div className="mb-6">
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৭)" : "Class 10 (SSC 2027)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "বিজ্ঞান বান্ডেল (🎁)",
-                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
-                ]
-              : [
-                  "Science Bundle (🎁)",
-                  "Bangla, English, ICT Bundle (🎁)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* দশম শ্রেণি ২০২৬ */}
-        <div>
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৬)" : "Class 10 (SSC 2026)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "শেষ মুহূর্তের প্রস্তুতি (বিজ্ঞান)",
-                  "শেষ মুহূর্তের প্রস্তুতি (ব্যবসায়)",
-                  "শেষ মুহূর্তের প্রস্তুতি (মানবিক)",
-                ]
-              : [
-                  "Last Minute Preparation (Science)",
-                  "Last Minute Preparation (Business)",
-                  "Last Minute Preparation (Humanities)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
 
