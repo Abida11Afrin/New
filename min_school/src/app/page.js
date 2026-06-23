@@ -10,6 +10,8 @@ import ParentReviewSlider from "@/components/ParentReviewSlider";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import DynamicBatchSection from '../components/DynamicBatchSection';
+
 
 {/* ── Helper functions (return এর বাইরে, export এর বাইরে) ── */}
 const toBengaliDigits = (num) => {
@@ -45,6 +47,7 @@ export default function Home() {
   const [superFeatures, setSuperFeatures] = useState([]);
   const [offlineImages, setOfflineImages] = useState([]);
   const [offlineFeatures, setOfflineFeatures] = useState([]);
+
 
   {/* ── useEffects ── */}
   useEffect(() => {
@@ -137,6 +140,8 @@ export default function Home() {
 
     window.addEventListener("scroll", handleScroll);
     handleScroll();
+
+
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -677,155 +682,8 @@ export default function Home() {
 </section>
 
 
-{/* ── দেশসেরা সকল অনলাইন ব্যাচ ── */}
-<section className="mb-12 md:mb-20 px-4">
-  <div className="max-w-6xl mx-auto">
+ <DynamicBatchSection lang={lang} />
 
-    {/* Title */}
-    <h2 className="text-center text-3xl md:text-4xl font-bold mb-4">
-      <span className="text-white">{lang === "BN" ? "দেশসেরা সকল " : "All the Country's Best "}</span>
-      <span style={{ color: "#f97316" }}>{lang === "BN" ? "অনলাইন " : "Online "}</span>
-      <span style={{ color: "#facc15" }}>{lang === "BN" ? "ব্যাচ" : "Batches"}</span>
-    </h2>
-
-    {/* Subtitle */}
-    <p className="text-center text-gray-400 text-sm md:text-base mb-10">
-      {lang === "BN"
-        ? "টেন মিনিট স্কুলের বিভিন্ন কোর্সে এই মুহূর্তে পড়া ৩০+ হাজার Academic স্টুডেন্টের একজন হও তুমিও।"
-        : "Become one of the 30,000+ Academic students currently studying in various courses at 10 Minute School."}
-    </p>
-
-    {/* Main Grid */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-      {/* Left — ক্লাস ৬-৮ */}
-      <div
-        className="rounded-2xl p-6"
-        style={{
-          background: "linear-gradient(135deg, #1a1000, #2a1a00)",
-          border: "1px solid #3a2a00",
-        }}
-      >
-        <h3 className="text-lg font-bold mb-6" style={{ color: "#f97316" }}>
-          {lang === "BN" ? "ক্লাস ৬-৮ অনলাইন ব্যাচ ২০২৬" : "Class 6-8 Online Batch 2026"}
-        </h3>
-        <div className="flex flex-col gap-3">
-          {(lang === "BN"
-            ? ["৬ষ্ঠ শ্রেণি", "৭ম শ্রেণি", "৮ম শ্রেণি"]
-            : ["Class 6", "Class 7", "Class 8"]
-          ).map((item, i) => (
-            <button
-              key={i}
-              className="text-white text-sm font-medium rounded-full px-5 py-2.5 text-left hover:opacity-80 transition-opacity"
-              style={{ background: "#2a2a2a", border: "1px solid #444" }}
-            >
-              {item} →
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Right — এসএসসি অনলাইন ব্যাচ (spans 2 cols) */}
-      <div
-        className="md:col-span-2 rounded-2xl p-6"
-        style={{
-          background: "linear-gradient(135deg, #2a0a0a, #1a0505)",
-          border: "1px solid #3a1010",
-        }}
-      >
-        <h3 className="text-lg font-bold mb-6" style={{ color: "#ef4444" }}>
-          {lang === "BN" ? "এসএসসি অনলাইন ব্যাচ" : "SSC Online Batch"}
-        </h3>
-
-        {/* নবম শ্রেণি */}
-        <div className="mb-6">
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "নবম শ্রেণি (এসএসসি ২০২৬)" : "Class 9 (SSC 2026)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "বিজ্ঞান বান্ডেল (🎁)",
-                  "ব্যবসায় শিক্ষা ও মানবিক বান্ডেল (🎁)",
-                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
-                ]
-              : [
-                  "Science Bundle (🎁)",
-                  "Business Studies & Humanities Bundle (🎁)",
-                  "Bangla, English, ICT Bundle (🎁)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* দশম শ্রেণি ২০২৭ */}
-        <div className="mb-6">
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৭)" : "Class 10 (SSC 2027)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "বিজ্ঞান বান্ডেল (🎁)",
-                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
-                ]
-              : [
-                  "Science Bundle (🎁)",
-                  "Bangla, English, ICT Bundle (🎁)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* দশম শ্রেণি ২০২৬ */}
-        <div>
-          <p className="text-gray-400 text-sm mb-3">
-            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৬)" : "Class 10 (SSC 2026)"}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {(lang === "BN"
-              ? [
-                  "শেষ মুহূর্তের প্রস্তুতি (বিজ্ঞান)",
-                  "শেষ মুহূর্তের প্রস্তুতি (ব্যবসায়)",
-                  "শেষ মুহূর্তের প্রস্তুতি (মানবিক)",
-                ]
-              : [
-                  "Last Minute Preparation (Science)",
-                  "Last Minute Preparation (Business)",
-                  "Last Minute Preparation (Humanities)",
-                ]
-            ).map((item, i) => (
-              <button
-                key={i}
-                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
-                style={{ background: "#2a2a2a", border: "1px solid #444" }}
-              >
-                {item} →
-              </button>
-            ))}
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
 
 
 {/* ── এইচএসসি অনলাইন ব্যাচ ── */}

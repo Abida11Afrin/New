@@ -172,98 +172,182 @@ class OfflineFeature(models.Model):
     def __str__(self):
         return self.title_en
     
-  
-############### batches/models.py
-
-# courses/models.py
-
-
-class BatchSection(models.Model):
-    title_part1_en = models.CharField(max_length=100, default="All the Country's Best")
-    title_part1_bn = models.CharField(max_length=100, default="দেশসেরা সকল")
-
-    title_part2_en = models.CharField(max_length=100, default="Online")
-    title_part2_bn = models.CharField(max_length=100, default="অনলাইন")
-    title_part2_color = models.CharField(max_length=7, default="#f97316")
-
-    title_part3_en = models.CharField(max_length=100, default="Batches")
-    title_part3_bn = models.CharField(max_length=100, default="ব্যাচ")
-    title_part3_color = models.CharField(max_length=7, default="#facc15")
-
-    subtitle_en = models.TextField(default="Become one of the 30,000+ Academic students...")
-    subtitle_bn = models.TextField(default="টেন মিনিট স্কুলের বিভিন্ন কোর্সে...")
-
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        verbose_name = "Batch Section Heading"
-        verbose_name_plural = "Batch Section Headings"
-
-    def __str__(self):
-        return f"{self.title_part1_en} {self.title_part2_en} {self.title_part3_en}"
-
-
-class BatchCategory(models.Model):
-    name_en = models.CharField(max_length=200)
-    name_bn = models.CharField(max_length=200)
-
-    color = models.CharField(max_length=7, default="#f97316")
-    gradient_from = models.CharField(max_length=7, default="#1a1000")
-    gradient_to = models.CharField(max_length=7, default="#2a1a00")
-    border_color = models.CharField(max_length=7, default="#3a2a00")
-
-    grid_cols = models.IntegerField(default=1, help_text="1=single column, 2=span 2 columns")
-    order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    
+    # ── অনলাইন ব্যাচ Category (ক্লাস ৬-৮, এসএসসি...) ──
+class OnlineBatchCategory(models.Model):
+    name_bn = models.CharField(max_length=255, verbose_name="নাম (বাংলা)")
+    name_en = models.CharField(max_length=255, verbose_name="Name (English)")
+    color = models.CharField(
+        max_length=20,
+        default="#f97316",
+        verbose_name="Title Color (hex)"
+    )
+    gradient_from = models.CharField(
+        max_length=20,
+        default="#1a1000",
+        verbose_name="Gradient From Color"
+    )
+    gradient_to = models.CharField(
+        max_length=20,
+        default="#2a1a00",
+        verbose_name="Gradient To Color"
+    )
+    border_color = models.CharField(
+        max_length=20,
+        default="#3a2a00",
+        verbose_name="Border Color"
+    )
+    is_wide = models.BooleanField(
+        default=False,
+        verbose_name="চওড়া? (2 কলাম)"
+    )
+    order = models.IntegerField(default=0, verbose_name="ক্রম")
+    is_active = models.BooleanField(default=True, verbose_name="সক্রিয়?")
 
     class Meta:
-        ordering = ["order"]
-        verbose_name_plural = "Batch Categories"
+        ordering = ['order']
+        verbose_name = "অনলাইন ব্যাচ ক্যাটাগরি"
+        verbose_name_plural = "অনলাইন ব্যাচ ক্যাটাগরিসমূহ"
 
     def __str__(self):
         return self.name_en
-
-
-class BatchSubcategory(models.Model):
+    # ── Subcategory (নবম শ্রেণি, দশম শ্রেণি ২০২৭...) ──
+class OnlineBatchSubcategory(models.Model):
     category = models.ForeignKey(
-        BatchCategory,
-        related_name="subcategories",
-        on_delete=models.CASCADE
+        OnlineBatchCategory,
+        on_delete=models.CASCADE,
+        related_name='subcategories',
+        verbose_name="ক্যাটাগরি"
     )
-
-    name_en = models.CharField(max_length=200, blank=True)
-    name_bn = models.CharField(max_length=200, blank=True)
-
-    order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    name_bn = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="নাম (বাংলা)"
+    )
+    name_en = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Name (English)"
+    )
+    order = models.IntegerField(default=0, verbose_name="ক্রম")
+    is_active = models.BooleanField(default=True, verbose_name="সক্রিয়?")
 
     class Meta:
-        ordering = ["order"]
-        verbose_name_plural = "Batch Subcategories"
+        ordering = ['order']
+        verbose_name = "সাবক্যাটাগরি"
+        verbose_name_plural = "সাবক্যাটাগরিসমূহ"
 
     def __str__(self):
-        return f"{self.category.name_en} > {self.name_en or '(No name)'}"
+        return f"{self.category.name_en} → {self.name_en or 'No name'}"
 
-
-class BatchItem(models.Model):
+# ── Batch Item/Button (বিজ্ঞান বান্ডেল, ৬ষ্ঠ শ্রেণি...) ──
+class OnlineBatchItem(models.Model):
     subcategory = models.ForeignKey(
-        BatchSubcategory,
-        related_name="items",
-        on_delete=models.CASCADE
+        OnlineBatchSubcategory,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name="সাবক্যাটাগরি"
     )
-
-    name_en = models.CharField(max_length=300)
-    name_bn = models.CharField(max_length=300)
-
-    has_gift = models.BooleanField(default=False)
-    url = models.CharField(max_length=500, blank=True)
-
-    order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    name_bn = models.CharField(max_length=255, verbose_name="নাম (বাংলা)")
+    name_en = models.CharField(max_length=255, verbose_name="Name (English)")
+    has_gift = models.BooleanField(
+        default=False,
+        verbose_name="গিফট আইকন (🎁)?"
+    )
+    link = models.CharField(
+        max_length=500,
+        default="/",
+        verbose_name="লিংক"
+    )
+    order = models.IntegerField(default=0, verbose_name="ক্রম")
+    is_active = models.BooleanField(default=True, verbose_name="সক্রিয়?")
 
     class Meta:
-        ordering = ["order"]
-        verbose_name_plural = "Batch Items"
+        ordering = ['order']
+        verbose_name = "ব্যাচ আইটেম"
+        verbose_name_plural = "ব্যাচ আইটেমসমূহ"
 
     def __str__(self):
         return self.name_en
+
+# ── Scrolling Banner Models ──
+class BannerImage(models.Model):
+    """Left-to-Right এবং Right-to-Left scroll করা banner images"""
+    
+    DIRECTION_CHOICES = [
+        ('left', 'Left to Right Scroll (→)'),
+        ('right', 'Right to Left Scroll (←)'),
+    ]
+    
+    image = models.ImageField(
+        upload_to='banners/',
+        verbose_name="ছবি"
+    )
+    direction = models.CharField(
+        max_length=10,
+        choices=DIRECTION_CHOICES,
+        default='left',
+        verbose_name="Scroll Direction"
+    )
+    order = models.IntegerField(default=0, verbose_name="ক্রম")
+    is_active = models.BooleanField(default=True, verbose_name="সক্রিয়?")
+
+    class Meta:
+        ordering = ['direction', 'order']
+        verbose_name = "Banner Image"
+        verbose_name_plural = "Banner Images"
+
+    def __str__(self):
+        return f"Banner {self.order} ({self.get_direction_display()})"
+
+
+class BannerConfig(models.Model):
+    """Banner configuration - speed, size etc."""
+    
+    title_bn = models.CharField(
+        max_length=200, 
+        blank=True, 
+        null=True,
+        verbose_name="শিরোনাম (বাংলা)"
+    )
+    title_en = models.CharField(
+        max_length=200, 
+        blank=True, 
+        null=True,
+        verbose_name="Title (English)"
+    )
+    
+    # Scroll Settings
+    left_scroll_speed = models.FloatField(
+        default=0.5, 
+        verbose_name="Left Banner Speed (→)",
+        help_text="Pixels per frame (0.5 = slow, 2 = fast)"
+    )
+    right_scroll_speed = models.FloatField(
+        default=0.5, 
+        verbose_name="Right Banner Speed (←)",
+        help_text="Pixels per frame (0.5 = slow, 2 = fast)"
+    )
+    
+    # Size Settings
+    image_width_min = models.IntegerField(default=170, verbose_name="Min Width")
+    image_width_max = models.IntegerField(default=250, verbose_name="Max Width")
+    image_height_min = models.IntegerField(default=120, verbose_name="Min Height")
+    image_height_max = models.IntegerField(default=175, verbose_name="Max Height")
+    
+    gap_between_images = models.IntegerField(
+        default=12, 
+        verbose_name="Gap (px)",
+        help_text="Space between images in pixels"
+    )
+    
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Banner Configuration"
+        verbose_name_plural = "Banner Configurations"
+
+    def __str__(self):
+        return "Banner Settings"
