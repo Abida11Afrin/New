@@ -11,6 +11,5 @@ urlpatterns = [
     path('super-features/', super_feature_list),
     path('offline-images/', offline_image_list),
     path('offline-features/', offline_feature_list),
-     path('api/batches/', include('batches.urls')),
 ]
 

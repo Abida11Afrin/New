@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect  } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import HeroBackground from "@/components/HeroBackground";
@@ -9,14 +9,9 @@ import ScrollingBanner from "@/components/ScrollingBanner";
 import ParentReviewSlider from "@/components/ParentReviewSlider";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 
-
-export default function BatchesSection() {
-  const { lang } = useLanguage();
-  const [data, setData] = useState(null);
-
-  
-{/*for app download section*/}
+{/* ── Helper functions (return এর বাইরে, export এর বাইরে) ── */}
 const toBengaliDigits = (num) => {
   const bengaliDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
   return num.toString().replace(/\d/g, (d) => bengaliDigits[d]);
@@ -34,139 +29,120 @@ const formatIndianNumber = (num) => {
 };
 
 export default function Home() {
-{/*for app download section*/}
-const { lang } = useLanguage();
-const [downloadCount, setDownloadCount] = useState(900000);
-const downloadSectionRef = useRef(null);
-const timerRef = useRef(null);
-const hasAnimatedRef = useRef(false);
+  const { lang } = useLanguage();
 
+  {/* ── App Download Section ── */}
+  const [downloadCount, setDownloadCount] = useState(900000);
+  const downloadSectionRef = useRef(null);
+  const timerRef = useRef(null);
+  const hasAnimatedRef = useRef(false);
 
-const [heroCourses, setHeroCourses] = useState([]);
+  {/* ── Course States ── */}
+  const [heroCourses, setHeroCourses] = useState([]);
+  const [onlineEnglishCourses, setOnlineEnglishCourses] = useState([]);
+  const [offlineLocations, setOfflineLocations] = useState([]);
+  const [offlineEnglishCourses, setOfflineEnglishCourses] = useState([]);
+  const [superFeatures, setSuperFeatures] = useState([]);
+  const [offlineImages, setOfflineImages] = useState([]);
+  const [offlineFeatures, setOfflineFeatures] = useState([]);
 
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=school_college`)
-    .then((res) => res.json())
-    .then((data) => setHeroCourses(data))
-    .catch((err) => console.error("Course fetch failed:", err));
-}, []);
-
-const [onlineEnglishCourses, setOnlineEnglishCourses] = useState([]);
-
-const [offlineLocations, setOfflineLocations] = useState([]);
-const [offlineEnglishCourses, setOfflineEnglishCourses] = useState([]);
-const [superFeatures, setSuperFeatures] = useState([]);
-const [offlineImages, setOfflineImages] = useState([]);
-const [offlineFeatures, setOfflineFeatures] = useState([]);
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=offline_english`)
-    .then((res) => res.json())
-    .then((data) => setOfflineEnglishCourses(data))
-    .catch((err) => console.error("Offline English courses fetch failed:", err));
-}, []);
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=online_english`)
-    .then((res) => res.json())
-    .then((data) => setOnlineEnglishCourses(data))
-    .catch((err) => console.error("Online English courses fetch failed:", err));
-}, []);
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-locations/`)
-    .then((res) => res.json())
-    .then((data) => setOfflineLocations(data))
-    .catch((err) => console.error("Offline locations fetch failed:", err));
-}, []);
-
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/super-features/`)
-    .then((res) => res.json())
-    .then((data) => setSuperFeatures(data))
-    .catch((err) => console.error(err));
-}, []);
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-images/`)
-    .then((res) => res.json())
-    .then((data) => setOfflineImages(data))
-    .catch((err) => console.error(err));
-}, []);
-
-useEffect(() => {
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-features/`)
-    .then((res) => res.json())
-    .then((data) => setOfflineFeatures(data))
-    .catch((err) => console.error(err));
-}, []);
-
+  {/* ── useEffects ── */}
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/batches/")
-      .then(res => res.json())
-      .then(data => setData(data));
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=school_college`)
+      .then((res) => res.json())
+      .then((data) => setHeroCourses(data))
+      .catch((err) => console.error("Course fetch failed:", err));
   }, []);
 
-  if (!data) return <p>Loading...</p>;
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=online_english`)
+      .then((res) => res.json())
+      .then((data) => setOnlineEnglishCourses(data))
+      .catch((err) => console.error("Online English courses fetch failed:", err));
+  }, []);
 
-  const { section, categories } = data;
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/?category=offline_english`)
+      .then((res) => res.json())
+      .then((data) => setOfflineEnglishCourses(data))
+      .catch((err) => console.error("Offline English courses fetch failed:", err));
+  }, []);
 
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-locations/`)
+      .then((res) => res.json())
+      .then((data) => setOfflineLocations(data))
+      .catch((err) => console.error("Offline locations fetch failed:", err));
+  }, []);
 
-useEffect(() => {
-  const startCount = () => {
-    const target = 1000000;
-    const start = 900000;
-    const duration = 40000;
-    const steps = 10000;
-    const increment = (target - start) / steps;
-    const stepTime = duration / steps;
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/super-features/`)
+      .then((res) => res.json())
+      .then((data) => setSuperFeatures(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    let current = start;
-    let step = 0;
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-images/`)
+      .then((res) => res.json())
+      .then((data) => setOfflineImages(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    setDownloadCount(start);
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/offline-features/`)
+      .then((res) => res.json())
+      .then((data) => setOfflineFeatures(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    if (timerRef.current) clearInterval(timerRef.current);
+  useEffect(() => {
+    const startCount = () => {
+      const target = 1000000;
+      const start = 900000;
+      const duration = 40000;
+      const steps = 10000;
+      const increment = (target - start) / steps;
+      const stepTime = duration / steps;
 
-    timerRef.current = setInterval(() => {
-      step++;
-      current += increment;
-      if (step >= steps) {
-        current = target;
-        clearInterval(timerRef.current);
-      }
-      setDownloadCount(Math.floor(current));
-    }, stepTime);
-  };
+      let current = start;
+      let step = 0;
 
-  const handleScroll = () => {
-    if (!downloadSectionRef.current) return;
-
-    const rect = downloadSectionRef.current.getBoundingClientRect();
-    const isVisible = rect.top < window.innerHeight * 0.85 && rect.bottom > 0;
-
-    if (isVisible && !hasAnimatedRef.current) {
-      hasAnimatedRef.current = true;
-      startCount();
-    } else if (!isVisible && hasAnimatedRef.current) {
-      hasAnimatedRef.current = false;
+      setDownloadCount(start);
       if (timerRef.current) clearInterval(timerRef.current);
-    }
-  };
 
+      timerRef.current = setInterval(() => {
+        step++;
+        current += increment;
+        if (step >= steps) {
+          current = target;
+          clearInterval(timerRef.current);
+        }
+        setDownloadCount(Math.floor(current));
+      }, stepTime);
+    };
 
-  window.addEventListener("scroll", handleScroll);
-  handleScroll();
+    const handleScroll = () => {
+      if (!downloadSectionRef.current) return;
+      const rect = downloadSectionRef.current.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight * 0.85 && rect.bottom > 0;
+      if (isVisible && !hasAnimatedRef.current) {
+        hasAnimatedRef.current = true;
+        startCount();
+      } else if (!isVisible && hasAnimatedRef.current) {
+        hasAnimatedRef.current = false;
+        if (timerRef.current) clearInterval(timerRef.current);
+      }
+    };
 
-  
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
 
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
-}, []); // ← খালি dependency array, একবারই রান হবে
-
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, []);
 
   return (
     <div className="bg-[#0d0d0d] text-white min-h-screen">
@@ -703,69 +679,153 @@ useEffect(() => {
 
 {/* ── দেশসেরা সকল অনলাইন ব্যাচ ── */}
 <section className="mb-12 md:mb-20 px-4">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Title */}
-        <h2 className="text-center text-3xl md:text-4xl font-bold mb-4">
-          <span className="text-white">
-            {lang === "BN" ? section.title_part1_bn : section.title_part1_en}
-          </span>{" "}
-          <span style={{ color: section.title_part2_color }}>
-            {lang === "BN" ? section.title_part2_bn : section.title_part2_en}
-          </span>{" "}
-          <span style={{ color: section.title_part3_color }}>
-            {lang === "BN" ? section.title_part3_bn : section.title_part3_en}
-          </span>
-        </h2>
+  <div className="max-w-6xl mx-auto">
 
-        {/* Subtitle */}
-        <p className="text-center text-gray-400 text-sm md:text-base mb-10">
-          {lang === "BN" ? section.subtitle_bn : section.subtitle_en}
-        </p>
+    {/* Title */}
+    <h2 className="text-center text-3xl md:text-4xl font-bold mb-4">
+      <span className="text-white">{lang === "BN" ? "দেশসেরা সকল " : "All the Country's Best "}</span>
+      <span style={{ color: "#f97316" }}>{lang === "BN" ? "অনলাইন " : "Online "}</span>
+      <span style={{ color: "#facc15" }}>{lang === "BN" ? "ব্যাচ" : "Batches"}</span>
+    </h2>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {categories.map(cat => (
-            <div
-              key={cat.id}
-              className={`rounded-2xl p-6 ${cat.grid_cols === 2 ? 'md:col-span-2' : ''}`}
-              style={{
-                background: `linear-gradient(135deg, ${cat.gradient_from}, ${cat.gradient_to})`,
-                border: `1px solid ${cat.border_color}`,
-              }}
+    {/* Subtitle */}
+    <p className="text-center text-gray-400 text-sm md:text-base mb-10">
+      {lang === "BN"
+        ? "টেন মিনিট স্কুলের বিভিন্ন কোর্সে এই মুহূর্তে পড়া ৩০+ হাজার Academic স্টুডেন্টের একজন হও তুমিও।"
+        : "Become one of the 30,000+ Academic students currently studying in various courses at 10 Minute School."}
+    </p>
+
+    {/* Main Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      {/* Left — ক্লাস ৬-৮ */}
+      <div
+        className="rounded-2xl p-6"
+        style={{
+          background: "linear-gradient(135deg, #1a1000, #2a1a00)",
+          border: "1px solid #3a2a00",
+        }}
+      >
+        <h3 className="text-lg font-bold mb-6" style={{ color: "#f97316" }}>
+          {lang === "BN" ? "ক্লাস ৬-৮ অনলাইন ব্যাচ ২০২৬" : "Class 6-8 Online Batch 2026"}
+        </h3>
+        <div className="flex flex-col gap-3">
+          {(lang === "BN"
+            ? ["৬ষ্ঠ শ্রেণি", "৭ম শ্রেণি", "৮ম শ্রেণি"]
+            : ["Class 6", "Class 7", "Class 8"]
+          ).map((item, i) => (
+            <button
+              key={i}
+              className="text-white text-sm font-medium rounded-full px-5 py-2.5 text-left hover:opacity-80 transition-opacity"
+              style={{ background: "#2a2a2a", border: "1px solid #444" }}
             >
-              <h3 className="text-lg font-bold mb-6" style={{ color: cat.color }}>
-                {lang === "BN" ? cat.name_bn : cat.name_en}
-              </h3>
-
-              {cat.subcategories.map(sub => (
-                <div key={sub.id} className="mb-6 last:mb-0">
-                  {sub.name_en && (
-                    <p className="text-gray-400 text-sm mb-3">
-                      {lang === "BN" ? sub.name_bn : sub.name_en}
-                    </p>
-                  )}
-                  <div className="flex flex-col md:flex-wrap gap-3">
-                    {sub.items.map(item => (
-                      <button
-                        key={item.id}
-                        className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity text-left"
-                        style={{ background: "#2a2a2a", border: "1px solid #444" }}
-                      >
-                        {lang === "BN" ? item.name_bn : item.name_en}
-                        {item.has_gift && " 🎁"} →
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+              {item} →
+            </button>
           ))}
         </div>
       </div>
-    </section>
 
+      {/* Right — এসএসসি অনলাইন ব্যাচ (spans 2 cols) */}
+      <div
+        className="md:col-span-2 rounded-2xl p-6"
+        style={{
+          background: "linear-gradient(135deg, #2a0a0a, #1a0505)",
+          border: "1px solid #3a1010",
+        }}
+      >
+        <h3 className="text-lg font-bold mb-6" style={{ color: "#ef4444" }}>
+          {lang === "BN" ? "এসএসসি অনলাইন ব্যাচ" : "SSC Online Batch"}
+        </h3>
 
+        {/* নবম শ্রেণি */}
+        <div className="mb-6">
+          <p className="text-gray-400 text-sm mb-3">
+            {lang === "BN" ? "নবম শ্রেণি (এসএসসি ২০২৬)" : "Class 9 (SSC 2026)"}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {(lang === "BN"
+              ? [
+                  "বিজ্ঞান বান্ডেল (🎁)",
+                  "ব্যবসায় শিক্ষা ও মানবিক বান্ডেল (🎁)",
+                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
+                ]
+              : [
+                  "Science Bundle (🎁)",
+                  "Business Studies & Humanities Bundle (🎁)",
+                  "Bangla, English, ICT Bundle (🎁)",
+                ]
+            ).map((item, i) => (
+              <button
+                key={i}
+                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
+                style={{ background: "#2a2a2a", border: "1px solid #444" }}
+              >
+                {item} →
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* দশম শ্রেণি ২০২৭ */}
+        <div className="mb-6">
+          <p className="text-gray-400 text-sm mb-3">
+            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৭)" : "Class 10 (SSC 2027)"}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {(lang === "BN"
+              ? [
+                  "বিজ্ঞান বান্ডেল (🎁)",
+                  "বাংলা, ইংরেজি, তথ্য ও যোগাযোগ প্রযুক্তি বান্ডেল (🎁)",
+                ]
+              : [
+                  "Science Bundle (🎁)",
+                  "Bangla, English, ICT Bundle (🎁)",
+                ]
+            ).map((item, i) => (
+              <button
+                key={i}
+                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
+                style={{ background: "#2a2a2a", border: "1px solid #444" }}
+              >
+                {item} →
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* দশম শ্রেণি ২০২৬ */}
+        <div>
+          <p className="text-gray-400 text-sm mb-3">
+            {lang === "BN" ? "দশম শ্রেণি (এসএসসি ২০২৬)" : "Class 10 (SSC 2026)"}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {(lang === "BN"
+              ? [
+                  "শেষ মুহূর্তের প্রস্তুতি (বিজ্ঞান)",
+                  "শেষ মুহূর্তের প্রস্তুতি (ব্যবসায়)",
+                  "শেষ মুহূর্তের প্রস্তুতি (মানবিক)",
+                ]
+              : [
+                  "Last Minute Preparation (Science)",
+                  "Last Minute Preparation (Business)",
+                  "Last Minute Preparation (Humanities)",
+                ]
+            ).map((item, i) => (
+              <button
+                key={i}
+                className="text-white text-sm font-medium rounded-full px-5 py-2.5 hover:opacity-80 transition-opacity"
+                style={{ background: "#2a2a2a", border: "1px solid #444" }}
+              >
+                {item} →
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 
 
 {/* ── এইচএসসি অনলাইন ব্যাচ ── */}
@@ -889,7 +949,6 @@ useEffect(() => {
     </div>
   </div>
 </section>
-
 
 <OnlineBatchSection />
 <ScrollingBanner />
