@@ -11,6 +11,8 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import DynamicBatchSection from '../components/DynamicBatchSection';
+import StudentReviews from '../components/StudentReviews';
+
 
 
 {/* ── Helper functions (return এর বাইরে, export এর বাইরে) ── */}
@@ -874,165 +876,12 @@ export default function Home() {
     </div>
   </div>
 </section>
+<section>
+  
+  {/* ✅ Dynamic Student Reviews */}
+      <StudentReviews lang={lang} />
 
-
-{/* ── Student Reviews Section ── */}
-<section className="mb-12 md:mb-20 px-4 overflow-hidden">
-  <div className="max-w-6xl mx-auto">
-
-    <div className="flex gap-4 overflow-x-auto pb-4" style={{ scrollbarWidth: "none" }}>
-
-      {(lang === "BN"
-        ? [
-            {
-              text: "টেন মিনিট স্কুলকে আমি অসংখ্য ধন্যবাদ জানাতে চাই। আমি যখন ২০২৪ সালে ৮ম উঠি তখন ছিল নতুন কারিকুলাম। অর্ধেক মাস এরকম আগোছালো কেটে গেল। যখন পরীক্ষার সিদ্ধান্ত নেওয়া হয় এবং বড় একটা সিলেবাস আমাদের ধরিয়ে দেওয়া হয় তখন আমার মতো প্রায় সবার একদম নাজেহাল ঠিক ঐরকম সময় 10 minute school নিয়ে আসে...",
-              name: "রেদোয়ান আহমেদ",
-              school: "বীরশ্রেষ্ঠ নূর মোহাম্মদ পাবলিক কলেজ",
-              bg: "linear-gradient(135deg, #2a0a1a, #1a0510)",
-              border: "#4a1a2a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "আমি গত 4 বছর ধরে প্রথম স্থান অর্জন করে আসছি। এইবছরও আমি 9 থেকে 10এ উত্তীর্ণ হয়েছি প্রথম স্থান অর্জন করে। এর পেছনে টেন মিনিট স্কুলের অবদান অনেক ছিল। তাই আমি টেন মিনিট স্কুলকে অনেক অনেক ধন্যবাদ জানাচ্ছি। আসলে আমি 10 ms এর ফ্রি ক্লাস গুলো করে আসছি। আর এই ক্লাস গুলোই আমাকে inspire করেছে ভালো একটা স্থান অর্জন করার। এবং আমি এই...",
-              name: "পূজা রানী দাস",
-              school: "The Roses Collectorate School, Habiganj",
-              bg: "linear-gradient(135deg, #0a2a10, #051a08)",
-              border: "#1a4a1a",
-              highlight: true,
-              icon: "/images/girls_icon.jpg",
-            },
-            {
-              text: "টেন মিনিট স্কুল আমার পড়াশোনায় অনেক হেল্প করেছে। অনেক অভিজ্ঞ টিচারদের স্টাডি টিপস, আর তাদের ভালো করে পড়ানোর কারণে আমার বার্ষিক পরীক্ষার রেজাল্ট অনেক ভালো হয়েছে। থ্যাংক ইউ, টেন মিনিট স্কুল।",
-              name: "জাহিদ আলম",
-              school: "কমর আলী হাই স্কুল, নারায়ণগঞ্জ",
-              bg: "linear-gradient(135deg, #0a1a2a, #050f1a)",
-              border: "#1a3a5a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "আমি এবার স্কুলে ৫ সেকশন মিলিয়ে ফার্স্ট হয়েছি। বার্ষিক পরীক্ষার আগের মডেল টেস্টগুলো আর ফাইনাল রিভিশন ক্লাসগুলো আমার অনেক কাজে লেগেছে। থ্যাংক ইউ টেন মিনিট স্কুল।",
-              name: "অমৃত সাহা",
-              school: "কান্তনগর",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "আপনাদের পড়ানোর ধরন এবং বিষয়গুলো সহজভাবে ব্যাখ্যা করার পদ্ধতি আমার খুব ভালো লেগেছে। আপনাদের ভিডিও ও কন্টেন্ট দেখে আমি পড়াশোনায় অনেক সাহায্য পেয়েছি। বিশেষ করে, জটিল বিষয়গুলো সহজভাবে শেখানোর জন্য আপনাদের টিমকে ধন্যবাদ। আপনাদের কাজ শিক্ষার্থীদের জন্য সত্যিই অনুপ্রেরণাদায়ক। আমি মন থেকে আপনাদের সফলতা কামনা করছি এবং...",
-              name: "তাওহিদুল রাহমান",
-              school: "জামশেদ আহমেদ হাই স্কুল, সিলেট",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "আমি ৬ষ্ঠ শ্রেণি থেকে টেন মিনিট স্কুলের সাথে যুক্ত। কোনো টিচার বা কোচিং করিনি। প্রয়োজনে মায়ের সাহায্য নিয়েছি। সত্যি অসাধারণ।",
-              name: "স্বীকৃতি দাস হৃদিকা",
-              school: "চিটাগং গভ. গার্লস হাই স্কুল",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/girls_icon.jpg",
-            },
-          ]
-        : [
-            {
-              text: "I want to thank 10 Minute School immensely. When I moved to class 8 in 2024, it was a new curriculum. About half a month went by in complete disarray. When the exam decisions were made and we were handed a huge syllabus, almost everyone like me was completely overwhelmed — right at that time, 10 Minute School came in...",
-              name: "Redwan Ahmed",
-              school: "Birshreshtha Noor Mohammad Public College",
-              bg: "linear-gradient(135deg, #2a0a1a, #1a0510)",
-              border: "#4a1a2a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "I have been securing first position for the past 4 years. This year too, I passed from class 9 to 10 securing first position. 10 Minute School contributed a lot to this. So I thank 10 Minute School very much. Actually, I've been taking 10 MS's free classes, and these classes inspired me to achieve a good position. And I...",
-              name: "Puja Rani Das",
-              school: "The Roses Collectorate School, Habiganj",
-              bg: "linear-gradient(135deg, #0a2a10, #051a08)",
-              border: "#1a4a1a",
-              highlight: true,
-              icon: "/images/girls_icon.jpg",
-            },
-            {
-              text: "10 Minute School has helped me a lot in my studies. Thanks to the study tips from many experienced teachers and their excellent teaching, my annual exam results were very good. Thank you, 10 Minute School.",
-              name: "Zahid Alam",
-              school: "Komor Ali High School, Narayanganj",
-              bg: "linear-gradient(135deg, #0a1a2a, #050f1a)",
-              border: "#1a3a5a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "This time I came first combining 5 sections in school. The model tests before the annual exam and the final revision classes were very helpful for me. Thank you, 10 Minute School.",
-              name: "Amrito Saha",
-              school: "Kantanagar",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "I really liked your teaching style and the way you explain topics so simply. Watching your videos and content has helped me a lot in my studies. Especially, thanks to your team for teaching complex topics in a simple way. Your work is truly inspiring for students. I sincerely wish you success and...",
-              name: "Tawhidul Rahman",
-              school: "Jamshed Ahmed High School, Sylhet",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/boys_icon.jpg",
-            },
-            {
-              text: "I've been with 10 Minute School since class 6. I never took any tutor or coaching. I took help from my mother whenever needed. Truly amazing.",
-              name: "Swikriti Das Hridika",
-              school: "Chittagong Govt. Girls High School",
-              bg: "linear-gradient(135deg, #0a1a2a, #051510)",
-              border: "#1a3a3a",
-              icon: "/images/girls_icon.jpg",
-            },
-          ]
-      ).map((review, i) => (
-        <div
-          key={i}
-          className="flex-shrink-0 flex flex-col justify-between rounded-3xl p-6"
-          style={{
-            width: "85vw",
-            maxWidth: "300px",
-            minHeight: "320px",
-            background: review.bg,
-            border: `1px solid ${review.border}`,
-          }}
-        >
-          <div>
-            <p className="text-gray-300 text-sm leading-relaxed mb-4">
-              {review.text}
-            </p>
-            {review.highlight && (
-              <span className="text-green-400 text-sm font-semibold cursor-pointer">
-                {lang === "BN" ? "আরও দেখুন" : "See More"}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3 mt-6">
-            <div
-              className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden"
-              style={{ background: "#2a2a3a" }}
-            >
-              <Image
-                src={review.icon}
-                alt="user"
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <p className="text-white text-sm font-bold">{review.name}</p>
-              <p className="text-gray-500 text-xs">{review.school}</p>
-            </div>
-          </div>
-        </div>
-      ))}
-
-    </div>
-  </div>
 </section>
-
 
 {/* ── App Download Section ── */}
 <section ref={downloadSectionRef} className="mb-12 md:mb-20 px-4">

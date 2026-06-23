@@ -4,10 +4,9 @@ from .models import (
     SuperFeature, OfflineImage, 
     OfflineFeature, 
     OnlineBatchCategory, OnlineBatchSubcategory, OnlineBatchItem,
+    BannerImage, BannerConfig,
+    StudentReview, StudentReviewConfig,
 )
-
-from .models import BannerImage, BannerConfig
-
 
 
 # ── Course Admin ──
@@ -113,7 +112,11 @@ class OnlineBatchItemAdmin(admin.ModelAdmin):
     search_fields = ['name_bn', 'name_en']
 
 
-    @admin.register(BannerImage)
+# ══════════════════════════════════════════════════════════════
+# ── Scrolling Banner Admins ──
+# ══════════════════════════════════════════════════════════════
+
+@admin.register(BannerImage)
 class BannerImageAdmin(admin.ModelAdmin):
     list_display = ['image_preview', 'direction', 'order', 'is_active']
     list_editable = ['direction', 'order', 'is_active']
@@ -160,7 +163,76 @@ class BannerConfigAdmin(admin.ModelAdmin):
     )
     
     def has_add_permission(self, request):
-        # শুধু ১টা config allow করবে
         if BannerConfig.objects.exists():
+            return False
+        return True
+
+
+# ══════════════════════════════════════════════════════════════
+# ── Student Reviews Admins ──
+# ══════════════════════════════════════════════════════════════
+
+@admin.register(StudentReview)
+class StudentReviewAdmin(admin.ModelAdmin):
+    list_display = [
+        'student_name_bn', 'student_name_en', 
+        'gender', 'is_highlight', 'order', 'is_active'
+    ]
+    list_editable = ['gender', 'is_highlight', 'order', 'is_active']
+    list_filter = ['is_active', 'gender', 'is_highlight']
+    search_fields = ['student_name_bn', 'student_name_en', 'school_name_bn', 'school_name_en']
+    ordering = ['order']
+    
+    fieldsets = (
+        ("Review Text", {
+            "fields": ("review_text_bn", "review_text_en")
+        }),
+        ("Student Information", {
+            "fields": (
+                ("student_name_bn", "student_name_en"),
+                ("school_name_bn", "school_name_en"),
+                "gender"
+            )
+        }),
+        ("Card Design", {
+            "fields": (
+                ("background_gradient_from", "background_gradient_to"),
+                "border_color"
+            ),
+            "description": "Example colors: #0a1a2a, #051510, #1a3a3a"
+        }),
+        ("Settings", {
+            "fields": ("is_highlight", "order", "is_active")
+        }),
+    )
+
+
+@admin.register(StudentReviewConfig)
+class StudentReviewConfigAdmin(admin.ModelAdmin):
+    list_display = ['section_title_bn', 'section_title_en', 'is_active']
+    
+    fieldsets = (
+        ("Section Title", {
+            "fields": ("section_title_bn", "section_title_en")
+        }),
+        ("Card Size Settings", {
+            "fields": (
+                "card_width_mobile",
+                "card_width_desktop", 
+                "card_min_height"
+            ),
+            "description": "CSS values like: 85vw, 300px, 320px"
+        }),
+        ("Icon Settings", {
+            "fields": ("male_icon_url", "female_icon_url"),
+            "description": "Image paths like: /images/boys_icon.jpg"
+        }),
+        ("Status", {
+            "fields": ("is_active",)
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        if StudentReviewConfig.objects.exists():
             return False
         return True

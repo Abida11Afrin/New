@@ -351,3 +351,118 @@ class BannerConfig(models.Model):
 
     def __str__(self):
         return "Banner Settings"
+    
+    # ── Student Reviews Models ──
+class StudentReview(models.Model):
+    """Student reviews section"""
+    
+    GENDER_CHOICES = [
+        ('male', 'Male (👦)'),
+        ('female', 'Female (👧)'),
+    ]
+    
+    # Review Text
+    review_text_bn = models.TextField(verbose_name="Review (বাংলা)")
+    review_text_en = models.TextField(verbose_name="Review (English)")
+    
+    # Student Info
+    student_name_bn = models.CharField(max_length=200, verbose_name="Student Name (বাংলা)")
+    student_name_en = models.CharField(max_length=200, verbose_name="Student Name (English)")
+    school_name_bn = models.CharField(max_length=300, verbose_name="School (বাংলা)")
+    school_name_en = models.CharField(max_length=300, verbose_name="School (English)")
+    
+    # Design
+    background_gradient_from = models.CharField(
+        max_length=20, 
+        default="#0a1a2a",
+        verbose_name="Background From Color"
+    )
+    background_gradient_to = models.CharField(
+        max_length=20, 
+        default="#051510",
+        verbose_name="Background To Color"
+    )
+    border_color = models.CharField(
+        max_length=20, 
+        default="#1a3a3a",
+        verbose_name="Border Color"
+    )
+    
+    # Student Icon
+    gender = models.CharField(
+        max_length=10, 
+        choices=GENDER_CHOICES, 
+        default='male',
+        verbose_name="Gender (Icon)"
+    )
+    
+    # Features
+    is_highlight = models.BooleanField(
+        default=False,
+        verbose_name="Show 'See More' Button?"
+    )
+    
+    order = models.IntegerField(default=0, verbose_name="Order")
+    is_active = models.BooleanField(default=True, verbose_name="Active?")
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Student Review"
+        verbose_name_plural = "Student Reviews"
+
+    def __str__(self):
+        return f"{self.student_name_en} - {self.order}"
+
+
+class StudentReviewConfig(models.Model):
+    """Student Reviews Section Configuration"""
+    
+    # Section Title
+    section_title_bn = models.CharField(
+        max_length=200,
+        default="শিক্ষার্থীদের মতামত",
+        verbose_name="Section Title (বাংলা)"
+    )
+    section_title_en = models.CharField(
+        max_length=200,
+        default="Student Reviews",
+        verbose_name="Section Title (English)"
+    )
+    
+    # Scrolling Settings
+    card_width_mobile = models.CharField(
+        max_length=20,
+        default="85vw",
+        verbose_name="Card Width (Mobile)"
+    )
+    card_width_desktop = models.CharField(
+        max_length=20,
+        default="300px",
+        verbose_name="Card Max Width (Desktop)"
+    )
+    card_min_height = models.CharField(
+        max_length=20,
+        default="320px",
+        verbose_name="Card Min Height"
+    )
+    
+    # Icon URLs
+    male_icon_url = models.CharField(
+        max_length=500,
+        default="/images/boys_icon.jpg",
+        verbose_name="Male Icon URL"
+    )
+    female_icon_url = models.CharField(
+        max_length=500,
+        default="/images/girls_icon.jpg",
+        verbose_name="Female Icon URL"
+    )
+    
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Student Review Configuration"
+        verbose_name_plural = "Student Review Configurations"
+
+    def __str__(self):
+        return "Student Review Settings"

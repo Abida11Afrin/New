@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useRef } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-function Banner({ images, direction = "left" }) {
+function Banner({ images, direction = "left", speed = 0.5, config }) {
   const trackRef = useRef(null);
 
   useEffect(() => {
@@ -16,9 +17,10 @@ function Banner({ images, direction = "left" }) {
     const move = () => {
       if (!running) return;
 
-      x += direction === "left" ? -0.5 : 0.5;
+      // Left direction = scroll right to left (negative)
+      // Right direction = scroll left to right (positive)
+      x += direction === "left" ? -speed : speed;
 
-      // অর্ধেক width মানে একটা set শেষ — reset করো
       const half = track.scrollWidth / 2;
 
       if (direction === "left" && Math.abs(x) >= half) x = 0;
@@ -34,29 +36,33 @@ function Banner({ images, direction = "left" }) {
       running = false;
       cancelAnimationFrame(animId);
     };
-  }, [direction]);
+  }, [direction, speed]);
 
-  // duplicate — seamless loop এর জন্য
   const allImages = [...images, ...images];
 
   return (
     <div className="w-full overflow-hidden py-2">
-      <div ref={trackRef} className="flex gap-3 w-max">
-        {allImages.map((src, i) => (
+      <div 
+        ref={trackRef} 
+        className="flex w-max"
+        style={{ gap: `${config.gap_between_images || 12}px` }}
+      >
+        {allImages.map((img, i) => (
           <div
             key={i}
             className="flex-shrink-0 rounded-2xl overflow-hidden"
             style={{
-              width: "clamp(170px, 20vw, 250px)",
-              height: "clamp(120px, 13vw, 175px)",
+              width: `clamp(${config.image_width_min}px, 20vw, ${config.image_width_max}px)`,
+              height: `clamp(${config.image_height_min}px, 13vw, ${config.image_height_max}px)`,
             }}
           >
             <Image
-              src={src}
+              src={img}
               alt={`banner-${i}`}
-              width={220}
-              height={145}
+              width={config.image_width_max || 250}
+              height={config.image_height_max || 175}
               className="w-full h-full object-cover"
+              unoptimized={true}
             />
           </div>
         ))}
@@ -66,26 +72,80 @@ function Banner({ images, direction = "left" }) {
 }
 
 export default function ScrollingBanner() {
-  const leftImages = [
-    "/images/600_students_1st.jpg",
-    "/images/arman_with_Student.jpeg",
-    "/images/hi5.jpeg",
-    "/images/3000_students123.jpg",
-    "/images/SCR-20251120.jpeg",
-  ];
+  const [leftImages, setLeftImages] = useState([]);
+  const [rightImages, setRightImages] = useState([]);
+  const [config, setConfig] = useState({
+    left_scroll_speed: 0.5,
+    right_scroll_speed: 0.5,
+    image_width_min: 170,
+    image_width_max: 250,
+    image_height_min: 120,
+    image_height_max: 175,
+    gap_between_images: 12,
+  });
+  const [loading, setLoading] = useState(true);
 
-  const rightImages = [
-    "/images/redbaby.jpg",
-    "/images/hall.jpeg",
-    "/images/mic.jpeg",
-    "/images/mic2.jpeg",
-    "/images/kriti_students.jpg",
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Config fetch
+        const configRes = await fetch("http://127.0.0.1:8000/api/banner-config/");
+        const configData = await configRes.json();
+        setConfig(configData);
+
+        // Left direction images (scroll →)
+        const leftRes = await fetch("http://127.0.0.1:8000/api/banner-images/?direction=left");
+        const leftData = await leftRes.json();
+        setLeftImages(leftData.map(img => img.image_url));
+
+        // Right direction images (scroll ←)
+        const rightRes = await fetch("http://127.0.0.1:8000/api/banner-images/?direction=right");
+        const rightData = await rightRes.json();
+        setRightImages(rightData.map(img => img.image_url));
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Banner fetch error:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full py-4 text-center text-gray-400">
+        Loading banners...
+      </div>
+    );
+  }
+
+  if (leftImages.length === 0 && rightImages.length === 0) {
+    return null;
+  }
 
   return (
     <div className="w-full py-4">
-      <Banner images={leftImages} direction="left" />
-      <Banner images={rightImages} direction="right" />
+      {/* First row: Left direction (scroll right to left ←) */}
+      {leftImages.length > 0 && (
+        <Banner 
+          images={leftImages} 
+          direction="left" 
+          speed={config.left_scroll_speed}
+          config={config}
+        />
+      )}
+
+      {/* Second row: Right direction (scroll left to right →) */}
+      {rightImages.length > 0 && (
+        <Banner 
+          images={rightImages} 
+          direction="right" 
+          speed={config.right_scroll_speed}
+          config={config}
+        />
+      )}
     </div>
   );
 }

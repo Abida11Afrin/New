@@ -6,6 +6,8 @@ from .models import (
     Course, OfflineLocation, SuperFeature,
     OfflineImage, OfflineFeature,
     OnlineBatchCategory, OnlineBatchSubcategory, OnlineBatchItem,
+    BannerImage, BannerConfig,
+    StudentReview, StudentReviewConfig,
 )
 from .serializers import (
     CourseSerializer,
@@ -13,13 +15,15 @@ from .serializers import (
     SuperFeatureSerializer,
     OfflineImageSerializer,
     OfflineFeatureSerializer,
-    OnlineBatchCategorySerializer,   # ✅ was missing from import
+    OnlineBatchCategorySerializer,
+    BannerImageSerializer, BannerConfigSerializer,
+    StudentReviewSerializer, StudentReviewConfigSerializer,
 )
 
-# ❌ REMOVE these two lines - models don't exist
-# from .models import BatchSection, BatchCategory
-# from .serializers import BatchSectionSerializer, BatchCategorySerializer
 
+# ══════════════════════════════════════════════════════════════
+# ── Basic Course Views ──
+# ══════════════════════════════════════════════════════════════
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -64,9 +68,82 @@ def offline_feature_list(request):
     return Response(serializer.data)
 
 
+# ══════════════════════════════════════════════════════════════
+# ── Online Batch Views ──
+# ══════════════════════════════════════════════════════════════
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def online_batch_list(request):
     categories = OnlineBatchCategory.objects.filter(is_active=True).order_by('order')
     serializer = OnlineBatchCategorySerializer(categories, many=True)
     return Response(serializer.data)
+
+
+# ══════════════════════════════════════════════════════════════
+# ── Banner Views ──
+# ══════════════════════════════════════════════════════════════
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def banner_images(request):
+    direction = request.query_params.get('direction', None)
+    
+    images = BannerImage.objects.filter(is_active=True)
+    
+    if direction:
+        images = images.filter(direction=direction)
+    
+    images = images.order_by('order')
+    serializer = BannerImageSerializer(images, many=True, context={'request': request})
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def banner_config(request):
+    config = BannerConfig.objects.filter(is_active=True).first()
+    if config:
+        serializer = BannerConfigSerializer(config)
+        return Response(serializer.data)
+    else:
+        return Response({
+            "left_scroll_speed": 0.5,
+            "right_scroll_speed": 0.5,
+            "image_width_min": 170,
+            "image_width_max": 250,
+            "image_height_min": 120,
+            "image_height_max": 175,
+            "gap_between_images": 12,
+        })
+
+
+# ══════════════════════════════════════════════════════════════
+# ── Student Review Views ──
+# ══════════════════════════════════════════════════════════════
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def student_reviews(request):
+    reviews = StudentReview.objects.filter(is_active=True).order_by('order')
+    serializer = StudentReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def student_review_config(request):
+    config = StudentReviewConfig.objects.filter(is_active=True).first()
+    if config:
+        serializer = StudentReviewConfigSerializer(config)
+        return Response(serializer.data)
+    else:
+        return Response({
+            "section_title_bn": "শিক্ষার্থীদের মতামত",
+            "section_title_en": "Student Reviews",
+            "card_width_mobile": "85vw",
+            "card_width_desktop": "300px",
+            "card_min_height": "320px",
+            "male_icon_url": "/images/boys_icon.jpg",
+            "female_icon_url": "/images/girls_icon.jpg",
+        })
